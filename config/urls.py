@@ -8,7 +8,7 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 from tastypie.api import Api
-from app.api import AgentResource, FlightPreferenceResource, CustomerResource
+from travel_app.api import AgentResource, FlightPreferenceResource, CustomerResource
 
 v1_api = Api(api_name='v1')
 v1_api.register(AgentResource())
@@ -28,7 +28,7 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here
-    url(r'^dashboard/', include('app.urls')),
+    url(r'^dashboard/', include('travel_app.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

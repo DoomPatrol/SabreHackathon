@@ -47,7 +47,7 @@ LOCAL_APPS = (
     'trip_brain.users.apps.UsersConfig',
     'tastypie',
     # Your stuff: custom apps go here
-    'app',
+    'travel_app',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
