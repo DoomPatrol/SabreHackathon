@@ -113,7 +113,7 @@ EMAIL_SUBJECT_PREFIX = env('DJANGO_EMAIL_SUBJECT_PREFIX', default='[trip_brain] 
 SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 
 # Anymail with Mailgun
-INSTALLED_APPS += ("sendgrid-django", )
+# INSTALLED_APPS += ("sendgrid-django", )
 EMAIL_BACKEND = "sgbackend.SendGridBackend"
 SENDGRID_API_KEY = "Q8EMfCYhQbypXHQaXGc1PA"
 
