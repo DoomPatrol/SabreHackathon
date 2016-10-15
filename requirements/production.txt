@@ -17,4 +17,4 @@ Collectfast==0.2.3
 
 # Email backends for Mailgun, Postmark, SendGrid and more
 # -------------------------------------------------------
-sendgrid-django
+sendgrid-django==2.0.0
