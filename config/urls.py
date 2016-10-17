@@ -8,12 +8,16 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 from tastypie.api import Api
-from travel_app.api import AgentResource, FlightPreferenceResource, CustomerResource
+from travelapp.api import AgentResource, FlightPreferenceResource, CustomerResource, HotelPreferenceResource, ThemeResource, TripPreferenceResource, TripResource
 
 v1_api = Api(api_name='v1')
 v1_api.register(AgentResource())
 v1_api.register(FlightPreferenceResource())
 v1_api.register(CustomerResource())
+v1_api.register(HotelPreferenceResource())
+v1_api.register(TripPreferenceResource())
+v1_api.register(ThemeResource())
+v1_api.register(TripResource())
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name='home'),
@@ -28,7 +32,7 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here
-    url(r'^dashboard/', include('travel_app.urls')),
+    url(r'^dashboard/', include('travelapp.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

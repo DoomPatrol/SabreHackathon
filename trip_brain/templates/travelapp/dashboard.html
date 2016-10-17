@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="row">
+  <h3 class="center-align">Welcome back, {{agent.first_name}}</h3>
+  <div class="col s12 m4">
+    <div class="card-panel teal center-align dashboard-top-data">
+      <span class="white-text"><h3>$120,000</h3>
+        <h6>Year to date sales</h6>
+    </div>
+  </div>
+  <div class="col s12 m4">
+    <div class="card-panel teal center-align dashboard-top-data">
+      <span class="white-text"><h3>34</h3>
+        <h6>Total Customers</h6></span>
+    </div>
+  </div>
+  <div class="col s12 m4">
+    <a class="waves-effect waves-light modal-trigger" href="#modal1">
+    <div class="card-panel teal center-align dashboard-top-data">
+      <span class="white-text"><h3><i class="material-icons">account_box</i></h3>
+        <h6>Add a new customer</h6></span>
+    </div>
+  </a>
+  </div>
+</div>
+  <div class="row">
+    <div class="col s12">
+
+      <ul class="collapsible" data-collapsible="accordion">
+        {% for customer in customers %}
+        <script>
+        if(window.preferences_by_customer === undefined){
+          window.preferences_by_customer = {};
+        }
+        {% if customer.flightpreference_set.exists %}
+        window.preferences_by_customer[{{customer.id}}] = [];
+        {% for pref in customer.flightpreference_set.all %}
+          window.preferences_by_customer[{{customer.id}}].push(JSON.parse("{{pref.tojson}}".replace(/&quot;/g, "\"")));
+        {% endfor %}
+        {% endif %}
+        </script>
+        <li {% if forloop.first %}class="active"{% endif %}>
+        <div class="collapsible-header"><i class="material-icons">account_box</i>{{customer.name}}</div>
+        <div class="collapsible-body">
+          <div class="row">
+            <div class="col s12 customer-info">
+              <h2>{{customer.name}}</h2>
+              {% for trippref in customer.trippreference_set.all|slice:":1" %}
+              <p style="font-weight: 200; padding-top: 2px; padding-bottom: 5px;"><em>A {{trippref.trip_type|lower}} traveler looking to travel to Asia next year.</em></p>
+              {% endfor %}
+              <div class="row">
+                <div class="col s4">
+                  <h4>Customer Since</h4>
+                  <p>January, 2016</p>
+                </div>
+                <div class="col s4 customer-info-small">
+                  <h4>Yearly Spend</h4>
+                  <p class="yearly-spend">$25,323</p>
+                </div>
+                <div class="col s4 customer-info-small">
+                  <h4>Yearly Growth</h4>
+                  <p class="yearly-growth">-2.5%</p>
+                </div>
+                <div class="col s6">
+                  <a value="{{customer.id}}" class="btn btn-default btn-margin travel-search modal-trigger" href="#searchModal">Search for Travel</a>
+                </div>
+                <div class="col s6">
+                  <a href="#" class="btn btn-default btn-margin">Contact Customer</a>
+                </div>
+              </div>
+            </div>
+            <div class="col s6 preferences">
+              <img align="center" class="preference-icon" src="{% static 'images/airplane.png' %}">
+              <h3>Flights</h3>
+              {% if customer.flightpreference_set.exists %}
+              {% for flight_pref in customer.flightpreference_set.all|slice:":1" %}
+              <p>Alliance: {{flight_pref.get_alliance_display}}</p>
+              <p>Seat Location: {{flight_pref.seat}}</p>
+              <p>Target Price: ${{flight_pref.price}}</p>
+              {% endfor %}
+              {% else %}
+              <p>No preferences yet, send form or bot to learn more about your customer</p>
+              {% endif %}
+            </div>
+            <div class="col s6 preferences">
+              <img align="center" class="preference-icon" src="{% static 'images/hotel.png' %}">
+              <h3>Hotel</h3>
+              {% if customer.hotelpreference_set.exists %}
+              {% for hotel_pref in customer.hotelpreference_set.all|slice:":1" %}
+              <p>Minimum Hotel Rating: {{hotel_pref.stars}}</p>
+              <p>Preferred Type: {{hotel_pref.hotel_type|capfirst}}</p>
+              <p>Target Price Per Night: ${{hotel_pref.price}}</p>
+              {% endfor %}
+              {% else %}
+              <p>No preferences yet, send form or bot to learn more about your customer</p>
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col s6 preferences">
+              <img align="center" class="preference-icon" src="{% static 'images/passport.png' %}">
+              <h3>Type of Traveler</h3>
+              {% if customer.theme_set.exists %}
+              {% for item in customer.theme_set.all %}
+              <p class="theme-tag">{{item.name}}</p>
+              {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col s6 preferences">
+              <img align="center" class="preference-icon" src="{% static 'images/passport.png' %}">
+              <h3>Trips</h3>
+              {% if customer.trip_set.exists %}
+              {% for item in customer.trip_set.all %}
+              <p style="text-align: center;">Trip to {{item.destination}}</p>
+              {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </li>
+        {% endfor %}
+
+    </ul>
+    </div>
+  </div>
+
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4>Add a Customer</h4>
+      <div class="row">
+        <div class="col s12">
+          <form method="POST" class="post-form">{% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="save btn btn-default">Save</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="searchModal" class="modal">
+    <div class="modal-content">
+      <h4>Search for Travel</h4>
+      <div class="row">
+        <div class="col s12 modal-body">
+          <form class="col s12" id=searchForm>
+            <div class="row">
+              <div class="input-field col s6">
+                <input id="origin" type="text" class="autocomplete">
+                <label for="origin">Origin</label>
+              </div>
+              <div class="input-field col s6">
+                <input id="destination" type="text" class="validate">
+                <label for="destination">Destination</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s6 departDate">
+                <input id="departDate" type="text" class="validate">
+                <label for="departDate">Departure Date</label>
+              </div>
+              <div class="input-field col s6 returnDate">
+                <input id="returnDate" type="text" class="validate">
+                <label for="returnDate">Return Date</label>
+              </div>
+            </div>
+            <button class="btn btn-default search-button right" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div id="spinner-overlay" style="display: none;">
+  <div class="preloader-wrapper big active">
+     <div class="spinner-layer spinner-blue">
+       <div class="circle-clipper left">
+         <div class="circle"></div>
+       </div><div class="gap-patch">
+         <div class="circle"></div>
+       </div><div class="circle-clipper right">
+         <div class="circle"></div>
+       </div>
+     </div>
+</div>
+
+<div id="flight-result" style="visibility: hidden;">
+  <div class="row">
+    <div class="col s4">
+      <p class="flight-price"></p>
+    </div>
+    <div class="col s4">
+      <p class="airline-carrier"></p>
+    </div>
+    <div class="col s4">
+      <a href="#" class="btn btn-primary booking-button">Book Now</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

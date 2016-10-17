@@ -1,5 +1,7 @@
 /* These styles are generated from project.scss. */
 
+
+
 .alert-debug {
   color: black;
   background-color: white;
@@ -56,4 +58,62 @@ nav .brand-logo {
   font-size: 30pt;
   text-align: center;
   font-weight: 700;
+}
+
+.preference-icon {
+  width: 90px;
+  display: block;
+  margin: 0 auto;
+}
+
+.preferences p {
+  font-size: 16px;
+  padding: 2px;
+  text-align: center;
+}
+
+.preferences h3 {
+  text-align: center;
+  text-decoration: underline;
+  font-weight: 200;
+  font-size: 2rem;
+}
+
+.customer-info {
+  text-align: center;
+}
+
+.customer-info h4 {
+  font-weight: 200;
+  font-size: 1.4rem;
+  text-decoration: underline;
+}
+
+.customer-info p {
+  padding: 0;
+  font-size: 14pt;
+}
+
+.yearly-spend {
+  color: #00796B;
+  font-weight: 700;
+}
+
+.yearly-growth {
+  color: #d32f2f;
+  font-weight: 700;
+}
+
+.customer-info-small {
+  border-left: 1px solid rgba(0,0,0,.7);
+}
+
+.btn-margin {
+  margin: 20px;
+}
+
+.theme-tag {
+  text-transform: uppercase;
+  font-weight: 700;
+  text-align: center;
 }

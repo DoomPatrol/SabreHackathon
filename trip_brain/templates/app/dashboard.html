@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="row">
-  <h3 class="center-align">Welcome back, {{agent.first_name}}</h3>
+  <h3 class="center-align">Welcoasfsme back, {{agent.first_name}}</h3>
   <div class="col s12 m4">
     <div class="card-panel teal center-align dashboard-top-data">
       <span class="white-text"><h3>$120,000</h3>
@@ -55,7 +55,7 @@
       {% endfor %}
     </div>
   </div>
-
+<form method="POST" action=""> {% csrf_token %} {{ customer_form }} <button type="submit">{% trans "Request Quote" %}</button> </form>
   <div id="modal1" class="modal">
     <div class="modal-content">
       <h4>Add a Customer</h4>

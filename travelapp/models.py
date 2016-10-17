@@ -3,6 +3,9 @@ from __future__ import unicode_literals
 from django.db import models
 from django.conf import settings
 
+import json
+
+
 # Create your models here.
 ALLIANCE_CHOICES = (
     ('*A', 'Star Alliance'),
@@ -51,11 +54,17 @@ class Customer(models.Model):
         return self.name
 
 class Trip(models.Model):
+    airfare_cost = models.PositiveIntegerField(blank=True)
+    airline = models.CharField(max_length=100, blank=True)
+    depart_date = models.DateField(null=True)
+    return_date = models.DateField(null=True)
+    origin = models.CharField(max_length=3, null=True)
+    destination = models.CharField(max_length=3, null=True)
     customer = models.ForeignKey(Customer)
-    hotel_cost = models.PositiveIntegerField()
-    hotel = models.CharField(max_length=100)
-    airfare_cost = models.PositiveIntegerField()
-    arifare = models.CharField(max_length=100)
+
+    def __str__(self):
+
+        return self.origin + ' ' + self.destination
 
 
 class TripPreference(models.Model):
@@ -64,6 +73,12 @@ class TripPreference(models.Model):
 
     def __str__(self):
         return self.trip_type
+
+    @property
+    def tojson(self):
+        return json.dumps({
+            "trip_type": self.trip_type
+        })
 
 class FlightPreference(models.Model):
     alliance = models.CharField(max_length=100, choices=ALLIANCE_CHOICES)
@@ -74,6 +89,14 @@ class FlightPreference(models.Model):
     def __str__(self):
         return self.customer.name + ' flight preferences'
 
+    @property
+    def tojson(self):
+        return json.dumps({
+            "alliance": self.alliance,
+            "seat": self.seat,
+            "price": self.price
+        })
+
 class HotelPreference(models.Model):
     stars = models.PositiveIntegerField()
     hotel_type = models.CharField(max_length=40, choices=HOTEL_CHOICES)
@@ -82,6 +105,13 @@ class HotelPreference(models.Model):
 
     def __str__(self):
         return self.customer.name + ' hotel preferences'
+
+    def tojson(self):
+        return json.dumps({
+            "stars": self.stars,
+            "hotel_type": self.hotel_type,
+            "price": self.price
+        })
 
 
 class Activity(models.Model):
@@ -98,16 +128,22 @@ class ActivityPreference(models.Model):
     def __str__(self):
         return self.customer.name + ' activity preferences'
 
+    @property
+    def tojson(self):
+        return json.dumps({
+            "activity": self.activity
+        })
+
+
 class Theme(models.Model):
     name = models.CharField(max_length=100)
+    customer = models.ForeignKey(Customer, null=True)
 
     def __str__(self):
         return self.name
 
-
-class ThemePreference(models.Model):
-    theme = models.ManyToManyField(Theme)
-    customer = models.ForeignKey(Customer, null=True)
-
-    def __str__(self):
-        return self.customer.name + ' theme preferences'
+    @property
+    def tojson(self):
+        return json.dumps({
+            "theme": self.name
+        })
